@@ -4,3 +4,7 @@
   - Debezium 사용
 3. Transactional Outbox Pattern 구성
   - Kafka Connect 사용
+
+[NestJS Kafka Documentation](https://docs.nestjs.com/microservices/kafka) 
+
+[[Kafka KRU] Consumer 내부 동작 원리와 구현](https://devocean.sk.com/community/detail.do?ID=165478&boardType=DEVOCEAN_STUDY&page=1)
