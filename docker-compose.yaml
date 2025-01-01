@@ -11,6 +11,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    networks:
+      - kafka_network
 
   controller-2:
     image: apache/kafka:latest
@@ -24,6 +26,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    networks:
+      - kafka_network
 
   controller-3:
     image: apache/kafka:latest
@@ -37,12 +41,15 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    networks:
+      - kafka_network
 
   broker-1:
     image: apache/kafka:latest
     container_name: broker-1
     ports:
       - 29092:9092
+      - 9997:9997
     environment:
       KAFKA_NODE_ID: 4
       # KRaft 모드 사용시 프로세스가 어떤 역할을 하는지 설정 - [broker, controller]
@@ -65,16 +72,20 @@ services:
       # controller quorum을 구성하는 노드들(투표자)의 주소를 설정
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9997
     depends_on:
       - controller-1
       - controller-2
       - controller-3
+    networks:
+      - kafka_network
 
   broker-2:
     image: apache/kafka:latest
     container_name: broker-2
     ports:
       - 39092:9092
+      - 9998:9998
     environment:
       KAFKA_NODE_ID: 5
       KAFKA_PROCESS_ROLES: broker
@@ -85,16 +96,20 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9998
     depends_on:
       - controller-1
       - controller-2
       - controller-3
+    networks:
+      - kafka_network
 
   broker-3:
     image: apache/kafka:latest
     container_name: broker-3
     ports:
       - 49092:9092
+      - 9999:9999
     environment:
       KAFKA_NODE_ID: 6
       KAFKA_PROCESS_ROLES: broker
@@ -105,7 +120,48 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9999
     depends_on:
       - controller-1
       - controller-2
       - controller-3
+    networks:
+      - kafka_network
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - controller-1
+      - controller-2
+      - controller-3
+      - broker-1
+      - broker-2
+      - broker-3
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      # 같은 docker network 안에 있으므로 INTERNAL 주소로 설정해야 한다.
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker-1:19092
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9997
+      KAFKA_CLUSTERS_0_AUDIT_TOPICAUDITENABLED: true
+      KAFKA_CLUSTERS_0_AUDIT_CONSOLEAUDITENABLED: true
+      KAFKA_CLUSTERS_1_NAME: local2
+      KAFKA_CLUSTERS_1_BOOTSTRAPSERVERS: broker-2:19092
+      KAFKA_CLUSTERS_1_METRICS_PORT: 9998
+      KAFKA_CLUSTERS_1_AUDIT_TOPICAUDITENABLED: true
+      KAFKA_CLUSTERS_1_AUDIT_CONSOLEAUDITENABLED: true
+      KAFKA_CLUSTERS_2_NAME: local3
+      KAFKA_CLUSTERS_2_BOOTSTRAPSERVERS: broker-3:19092
+      KAFKA_CLUSTERS_2_METRICS_PORT: 9999
+      KAFKA_CLUSTERS_2_AUDIT_TOPICAUDITENABLED: true
+      KAFKA_CLUSTERS_2_AUDIT_CONSOLEAUDITENABLED: true
+      DYNAMIC_CONFIG_ENABLED: 'true'
+
+    networks:
+      - kafka_network
+
+networks:
+  kafka_network:
+    driver: bridge
