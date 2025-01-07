@@ -19,6 +19,9 @@ import { ProductController } from './product.controller';
           consumer: {
             groupId: 'nestjs-product-consumer',
           },
+          producer: {
+            allowAutoTopicCreation: true,
+          },
         },
       },
     ]),

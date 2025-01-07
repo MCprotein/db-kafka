@@ -1,5 +1,7 @@
 import { Controller, Get, Inject, OnModuleInit, Param } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
+import { PRODUCT_TOPIC } from '../constant';
+import { finalize, lastValueFrom } from 'rxjs';
 
 @Controller('product')
 export class ProductController implements OnModuleInit {
@@ -9,23 +11,25 @@ export class ProductController implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    console.log(this.client);
     this.client.subscribeToResponseOf('product');
   }
 
   @Get('create/:id')
-  create(@Param('id') id: string) {
-    this.client
-      .send('product', {
-        type: 'create',
-        id: id || new Date(),
-      })
-      .subscribe({
-        next: (data) => console.log(data),
-        error: (error) => console.log(error),
-        complete: () => console.log('끝'),
-      });
+  async create(@Param('id') id: string) {
+    return await lastValueFrom(
+      this.client
+        .send(PRODUCT_TOPIC, {
+          type: 'create',
+          id: id || new Date(),
+        })
+        .pipe(finalize(() => console.log('끝'))),
+    );
+  }
 
-    return '끝';
+  @MessagePattern(PRODUCT_TOPIC)
+  consumer(@Payload() message: any) {
+    message.reply = 'reply';
+    message.replyTime = new Date();
+    return message;
   }
 }
