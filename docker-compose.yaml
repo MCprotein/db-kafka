@@ -162,6 +162,38 @@ services:
     networks:
       - kafka_network
 
+  mysql:
+    container_name: mysql
+    image: mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: hello
+      MYSQL_DATABASE: kafkacdc
+    networks:
+      - kafka_network
+
+  debezium:
+    image: debezium/connect:2.7.3.Final
+    container_name: debezium
+    ports:
+      - 8083:8083
+    environment:
+      BOOTSTRAP_SERVERS: broker-1:19092,broker-2:19092,broker-3:19092
+      GROUP_ID: debezium-00
+      CONFIG_STORAGE_TOPIC: DEBEZIUM_CONNECT_CONFIGS
+      OFFSET_STORAGE_TOPIC: DEBEZIUM_CONNECT_OFFSETS
+      STATUS_STORAGE_TOPIC: DEBEZIUM_CONNECT_STATUSES
+    depends_on:
+      - controller-1
+      - controller-2
+      - controller-3
+      - broker-1
+      - broker-2
+      - broker-3
+    networks:
+      - kafka_network
+
 networks:
   kafka_network:
     driver: bridge
