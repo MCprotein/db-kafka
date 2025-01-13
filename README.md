@@ -15,3 +15,28 @@
 ```bash
 $ npm run start:cli:dev --command=product --arg=array 123 456
 ```
+
+Debezium connector 등록 옵션
+[참고1](https://debezium.io/documentation/reference/stable/tutorial.html#deploying-mysql-connector)
+[참고2](https://debezium.io/documentation/reference/stable/connectors/mysql.html#mysql-connector-properties)
+```json
+{
+  "name": "debezium-for-cdc",  
+  "config": {  
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max": "1",  
+    "database.hostname": "mysql",  
+    "database.port": "3306",
+    "database.user": "root",
+    "database.password": "hello",
+    "database.server.id": "184054",  
+    "topic.prefix": "cdc-server-1",  
+    "database.include.list": "kafkacdc",  
+    "schema.history.internal.kafka.bootstrap.servers": "broker-1:19092, broker-2:19092, broker-3:19092",  
+    "schema.history.internal.kafka.topic": "schema-changes.kafkacdc"  
+  }
+}
+```
+
+debezium 연결된 모습 (kafka-ui)
+![kafka-ui](https://github.com/user-attachments/assets/d161d95f-5626-413d-931f-9bd15865bf65)

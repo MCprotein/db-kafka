@@ -174,15 +174,25 @@ services:
       - kafka_network
 
   debezium:
-    image: debezium/connect:2.7.3.Final
+    image: quay.io/debezium/connect:3.0.6.Final
     container_name: debezium
     ports:
       - 8083:8083
     environment:
+      # https://kafka.apache.org/documentation/#connect_running
       BOOTSTRAP_SERVERS: broker-1:19092,broker-2:19092,broker-3:19092
       GROUP_ID: debezium-00
+      # topic to use for storing connector and task configurations;
+      # note that this should be a single partition, highly replicated, compacted topic.
+      # You may need to manually create the topic to ensure the correct configuration
+      # as auto created topics may have multiple partitions or be automatically configured
+      # for deletion rather than compaction
       CONFIG_STORAGE_TOPIC: DEBEZIUM_CONNECT_CONFIGS
+      # opic to use for storing offsets;
+      # this topic should have many partitions, be replicated, and be configured for compaction
       OFFSET_STORAGE_TOPIC: DEBEZIUM_CONNECT_OFFSETS
+      # topic to use for storing statuses;
+      # this topic can have multiple partitions, and should be replicated and configured for compaction
       STATUS_STORAGE_TOPIC: DEBEZIUM_CONNECT_STATUSES
     depends_on:
       - controller-1
