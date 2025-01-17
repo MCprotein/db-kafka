@@ -40,3 +40,17 @@ Debezium connector 등록 옵션
 
 debezium 연결된 모습 (kafka-ui)
 ![kafka-ui](https://github.com/user-attachments/assets/d161d95f-5626-413d-931f-9bd15865bf65)
+
+### mongodb docker cluster (replica set)
+- https://www.mongodb.com/resources/products/compatibilities/deploying-a-mongodb-cluster-with-docker
+- https://velog.io/@youngeui_hong/Docker%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-MongoDB-Replica-Set-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0
+```js
+rs.initiate({
+  _id: "mongo-replica", 
+  members: [
+    {_id: 0, host: "mongo_primary"}, 
+    {_id: 1, host: "mongo_secondary1"}, 
+    {_id: 2, host: "mongo_secondary2"}
+    ]
+})
+```

@@ -204,6 +204,57 @@ services:
     networks:
       - kafka_network
 
+  mongo_primary:
+    image: mongo:latest
+    container_name: mongo_primary
+    hostname: mongo_primary
+    ports:
+      - 27018:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: jjangu
+      MONGO_INITDB_ROOT_PASSWORD: wow
+    volumes:
+      - ./mongodb/mongo_primary:/data/db
+      - ./mongo_replica_key:/etc/mongodb.key
+    command: ["--replSet", "mongo-replica", "--keyFile", "/etc/mongodb.key", "--bind_ip", "localhost, mongo_primary"]
+    networks:
+      - kafka_network
+  mongo_secondary1:
+    image: mongo:latest
+    container_name: mongo_secondary1
+    hostname: mongo_secondary1
+    ports:
+      - 27019:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: jjangu
+      MONGO_INITDB_ROOT_PASSWORD: wow
+    volumes:
+      - ./mongodb/mongo_secondary1:/data/db
+      - ./mongo_replica_key:/etc/mongodb.key
+    command: ["--replSet", "mongo-replica", "--keyFile", "/etc/mongodb.key", "--bind_ip", "localhost, mongo_secondary1"]
+    depends_on:
+      - mongo_primary
+    networks:
+      - kafka_network
+  mongo_secondary2:
+    image: mongo:latest
+    container_name: mongo_secondary2
+    hostname: mongo_secondary2
+    ports:
+      - 27020:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: jjangu
+      MONGO_INITDB_ROOT_PASSWORD: wow
+    volumes:
+      - ./mongodb/mongo_secondary2:/data/db
+      - ./mongo_replica_key:/etc/mongodb.key
+    command: ["--replSet", "mongo-replica", "--keyFile", "/etc/mongodb.key", "--bind_ip", "localhost, mongo_secondary2"]
+    depends_on:
+      - mongo_primary
+    networks:
+      - kafka_network
+
+
 networks:
   kafka_network:
     driver: bridge
