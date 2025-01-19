@@ -54,3 +54,16 @@ rs.initiate({
     ]
 })
 ```
+
+Debezium connector 등록 옵션
+```json
+{
+  "name": "debezium-for-mongodb-cdc",  
+  "config": {  
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "mongodb.connection.string": "mongodb://jjangu:wow@mongo_primary:27017/?replicaSet=mongo-replica", 
+    "topic.prefix": "mongodb", 
+    "collection.include.list": "shop[.]*" 
+  }
+}
+```
