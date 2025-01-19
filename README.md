@@ -58,12 +58,35 @@ rs.initiate({
 Debezium connector 등록 옵션
 ```json
 {
-  "name": "debezium-for-mongodb-cdc",  
-  "config": {  
+  "name": "debezium-for-mongodb-cdc-secondary1",
+  "config": {
     "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
-    "mongodb.connection.string": "mongodb://jjangu:wow@mongo_primary:27017/?replicaSet=mongo-replica", 
-    "topic.prefix": "mongodb", 
-    "collection.include.list": "shop[.]*" 
+    "mongodb.connection.string": "mongodb://jjangu:wow@mongo_secondary1:27017/?replicaSet=mongo-replica",
+    "topic.prefix": "mongodb",
+    "collection.include.list": "shop.product"
   }
 }
 ```
+
+## mongodb topic에서 before 항목에 null로 입력된다면 아래 설정 필요
+
+### [1. cature.mode 설정](https://debezium.io/documentation/reference/stable/connectors/mongodb.html#mongodb-property-capture-mode)
+PATCH http://localhost:8083/connectors/:connectorName/config
+```json
+{
+  "capture.mode": "change_streams_update_full_with_pre_image",
+  "capture.mode.full.update.type": "lookup"
+}
+```
+### 2. mongodb changeStreams 설정 변경 (mongodb 버전 6.0 이상 가능)
+```sh
+db.runCommand( {
+   collMod: <collection>,
+   changeStreamPreAndPostImages: { enabled: <boolean> }
+} )
+```
+```sh
+db.runCommand({collMod: "category", changeStreamPreAndPostImages: {enabled: true}})
+```
+- [참고1 - stackoverflow](https://stackoverflow.com/questions/77287900/debezium-connect-doesnt-provide-before-field-after-updating-an-item)
+- [참고2 - mongodb docs](https://www.mongodb.com/ko-kr/docs/v6.0/reference/command/collMod/#change-streams-with-document-pre--and-post-images)
