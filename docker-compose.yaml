@@ -254,7 +254,19 @@ services:
     networks:
       - kafka_network
 
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - metrics
+
 
 networks:
   kafka_network:
+    driver: bridge
+  metrics:
     driver: bridge
