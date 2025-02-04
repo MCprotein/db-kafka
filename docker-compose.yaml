@@ -48,8 +48,8 @@ services:
     image: apache/kafka:latest
     container_name: broker-1
     ports:
-      - 29092:9092
-      - 9997:9997
+      - "29092:9092"
+      - "9997:9100"
     environment:
       KAFKA_NODE_ID: 4
       # KRaft 모드 사용시 프로세스가 어떤 역할을 하는지 설정 - [broker, controller]
@@ -72,7 +72,6 @@ services:
       # controller quorum을 구성하는 노드들(투표자)의 주소를 설정
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_JMX_PORT: 9997
     depends_on:
       - controller-1
       - controller-2

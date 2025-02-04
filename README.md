@@ -90,3 +90,13 @@ db.runCommand({collMod: "category", changeStreamPreAndPostImages: {enabled: true
 ```
 - [참고1 - stackoverflow](https://stackoverflow.com/questions/77287900/debezium-connect-doesnt-provide-before-field-after-updating-an-item)
 - [참고2 - mongodb docs](https://www.mongodb.com/ko-kr/docs/v6.0/reference/command/collMod/#change-streams-with-document-pre--and-post-images)
+
+### [linux에 node exporter 설치](https://prometheus.io/docs/prometheus/latest/getting_started/#downloading-and-running-prometheus)
+다운로드 링크: https://prometheus.io/download/#node_exporter
+```bash
+wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz
+tar xvfz node_exporter-1.8.2.linux-amd64.tar.gz
+cd node_exporter-1.8.2.linux-amd64
+./node_exporter
+```
+prometheus.yml에서 docker 내 접근을 위해 host를 host.docker.internal로 설정

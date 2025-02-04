@@ -14,6 +14,11 @@ export class ProductController implements OnModuleInit {
     this.client.subscribeToResponseOf('product');
   }
 
+  @Get()
+  async healthCheck() {
+    return 'health check';
+  }
+
   @Get('create/:id')
   async create(@Param('id') id: string) {
     return await lastValueFrom(
