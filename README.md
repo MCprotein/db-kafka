@@ -100,3 +100,11 @@ cd node_exporter-1.8.2.linux-amd64
 ./node_exporter
 ```
 prometheus.yml에서 docker 내 접근을 위해 host를 host.docker.internal로 설정
+<br>
+<br>
+JMX_EXPORTER -> docker image 없음
+https://github.com/prometheus/jmx_exporter <br>
+bitnami/jmx-exporter -> 공식문서 부실
+https://hub.docker.com/r/bitnami/jmx-exporter
+danielqsj/kafka-exporter -> 공식문서 굿
+https://hub.docker.com/r/danielqsj/kafka-exporter

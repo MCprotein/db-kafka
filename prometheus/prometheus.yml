@@ -24,7 +24,7 @@ scrape_configs:
 #        labels:
 #          group: 'server'
 
-      - targets: ['host.docker.internal:9997', 'localhost:39092', 'localhost:49092']
+      - targets: ['host.docker.internal:9997', 'host.docker.internal:9998', 'host.docker.internal:9999']
         labels:
           group: 'kafka'
 

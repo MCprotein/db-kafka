@@ -83,8 +83,8 @@ services:
     image: apache/kafka:latest
     container_name: broker-2
     ports:
-      - 39092:9092
-      - 9998:9998
+      - "39092:9092"
+      - "9998:9999"
     environment:
       KAFKA_NODE_ID: 5
       KAFKA_PROCESS_ROLES: broker
@@ -95,7 +95,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_JMX_PORT: 9998
+      KAFKA_JMX_PORT: 9999
     depends_on:
       - controller-1
       - controller-2
@@ -262,6 +262,17 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - metrics
+
+  jmx_exporter:
+    image: danielqsj/kafka-exporter:latest
+    container_name: jmx_exporter
+    restart: always
+    ports:
+      - "9996:8080"
+    volumes:
+      - ./jmx_exporter2/:./
+
+
 
 
 networks:
