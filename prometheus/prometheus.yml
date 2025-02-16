@@ -24,7 +24,15 @@ scrape_configs:
 #        labels:
 #          group: 'server'
 
-      - targets: ['host.docker.internal:9997', 'host.docker.internal:9998', 'host.docker.internal:9999']
+      - targets: ['host.docker.internal:9997']
         labels:
-          group: 'kafka'
+          service: 'kafka-broker-1'
+
+      - targets: [ 'host.docker.internal:9998' ]
+        labels:
+          service: 'kafka-broker-2'
+
+      - targets: [ 'host.docker.internal:9999' ]
+        labels:
+          service: 'kafka-broker-3'
 

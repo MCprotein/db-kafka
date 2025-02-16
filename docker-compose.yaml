@@ -49,7 +49,7 @@ services:
     container_name: broker-1
     ports:
       - "29092:9092"
-      - "9997:9100"
+      - "9997:9997"
     environment:
       KAFKA_NODE_ID: 4
       # KRaft 모드 사용시 프로세스가 어떤 역할을 하는지 설정 - [broker, controller]
@@ -72,6 +72,10 @@ services:
       # controller quorum을 구성하는 노드들(투표자)의 주소를 설정
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_OPTS: "-javaagent:/jmx_prometheus_javaagent.jar=9997:/jmx_exporter_config.yaml"
+    volumes:
+      - ./jmx_exporter/jmx_prometheus_javaagent-1.1.0.jar:/jmx_prometheus_javaagent.jar
+      - ./jmx_exporter/config_1.yaml:/jmx_exporter_config.yaml
     depends_on:
       - controller-1
       - controller-2
@@ -84,7 +88,7 @@ services:
     container_name: broker-2
     ports:
       - "39092:9092"
-      - "9998:9999"
+      - "9998:9998"
     environment:
       KAFKA_NODE_ID: 5
       KAFKA_PROCESS_ROLES: broker
@@ -95,13 +99,17 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_JMX_PORT: 9999
+      KAFKA_OPTS: "-javaagent:/jmx_prometheus_javaagent.jar=9998:/jmx_exporter_config.yaml"
+    volumes:
+      - ./jmx_exporter/jmx_prometheus_javaagent-1.1.0.jar:/jmx_prometheus_javaagent.jar
+      - ./jmx_exporter/config_2.yaml:/jmx_exporter_config.yaml
     depends_on:
       - controller-1
       - controller-2
       - controller-3
     networks:
       - kafka_network
+      - metrics
 
   broker-3:
     image: apache/kafka:latest
@@ -119,7 +127,10 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_JMX_PORT: 9999
+      KAFKA_OPTS: "-javaagent:/jmx_prometheus_javaagent.jar=9999:/jmx_exporter_config.yaml"
+    volumes:
+      - ./jmx_exporter/jmx_prometheus_javaagent-1.1.0.jar:/jmx_prometheus_javaagent.jar
+      - ./jmx_exporter/config_3.yaml:/jmx_exporter_config.yaml
     depends_on:
       - controller-1
       - controller-2
@@ -263,14 +274,15 @@ services:
     networks:
       - metrics
 
-  jmx_exporter:
+  kafka_exporter:
+    container_name: kafka_exporter
     image: danielqsj/kafka-exporter:latest
-    container_name: jmx_exporter
-    restart: always
     ports:
-      - "9996:8080"
-    volumes:
-      - ./jmx_exporter2/:./
+      - 9308:9308
+    command: ["--kafka.server=broker-2:39092", "--kafka.server=broker-2:9092"]
+    networks:
+      - metrics
+
 
 
 

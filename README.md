@@ -106,5 +106,9 @@ JMX_EXPORTER -> docker image 없음
 https://github.com/prometheus/jmx_exporter <br>
 bitnami/jmx-exporter -> 공식문서 부실
 https://hub.docker.com/r/bitnami/jmx-exporter
-danielqsj/kafka-exporter -> 공식문서 굿
+danielqsj/kafka-exporter -> 공식문서 굿, jmx랑 약간 다름
 https://hub.docker.com/r/danielqsj/kafka-exporter
+
+### 최종 선택한 exporter: jmx_exporter
+작성예정
+
