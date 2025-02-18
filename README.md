@@ -122,3 +122,10 @@ exporter를 docker 컨테이너로 띄우는게 아니라 javaagent 방식으로
 참고문서
 - https://velog.io/@yoonjaeo/JMX-kafka-모니터링
 - https://nyyang.tistory.com/186
+
+### [cadvisor](https://github.com/google/cadvisor)
+- [prometheus cadvisor 문서](https://prometheus.io/docs/guides/cadvisor/#monitoring-docker-container-metrics-using-cadvisor)
+- container 각각의 리소스 사용량을 모니터링하기 위한 도구
+- cadavisor 자체로도 모니터링 ui가 있지만, prometheus에 연결해서 사용 가능
+- docker.sock을 연결해야 cadvisor에서 컨테이너 정보를 가져올 수 있음
+

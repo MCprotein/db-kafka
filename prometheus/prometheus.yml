@@ -36,3 +36,11 @@ scrape_configs:
         labels:
           service: 'kafka-broker-3'
 
+  - job_name: 'cadvisor'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+        - 'host.docker.internal:8081'
+        labels:
+          service: 'cadvisor'
+
