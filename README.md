@@ -110,5 +110,15 @@ danielqsj/kafka-exporter -> 공식문서 굿, jmx랑 약간 다름
 https://hub.docker.com/r/danielqsj/kafka-exporter
 
 ### 최종 선택한 exporter: jmx_exporter
-작성예정
+exporter를 docker 컨테이너로 띄우는게 아니라 javaagent 방식으로 jmx_exporter를 각 broker container에 포함시키는 방식<br>
+- javaagent
+  - JVM이 시작될때 어플리케이션의 main 메소드를 호출하기 전에 호출되는 agent의 premain 메소드를 통해 실행되며 런타임에 어플리케이션의 동작을 변경할 수 있는 어플리케이션
+  - jar 확장자로 패키징된다.
+  - 원래 어플리케이션이 JVM에 의해 실행되기 전에 클래스의 내용을 변경하거나 추가할 수 있다.
 
+  <br>
+[공식문서](https://prometheus.github.io/jmx_exporter/1.1.0/java-agent/)<br>
+[공식문서 깃허브](https://github.com/prometheus/jmx_exporter)<br><br>
+참고문서
+- https://velog.io/@yoonjaeo/JMX-kafka-모니터링
+- https://nyyang.tistory.com/186
