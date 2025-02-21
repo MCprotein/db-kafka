@@ -129,3 +129,9 @@ exporter를 docker 컨테이너로 띄우는게 아니라 javaagent 방식으로
 - cadavisor 자체로도 모니터링 ui가 있지만, prometheus에 연결해서 사용 가능
 - docker.sock을 연결해야 cadvisor에서 컨테이너 정보를 가져올 수 있음
 
+### docker stats와 cadvisor 메트릭 값 차이 존재
+참고: https://stackoverflow.com/questions/55117913/docker-stats-shows-different-data-compared-to-cadvisor
+
+```
+container_memory_usage_bytes - container_memory_cache = container_memory_working_set_bytes
+```
