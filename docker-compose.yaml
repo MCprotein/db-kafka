@@ -302,6 +302,20 @@ services:
     networks:
       - metrics
 
+  grafana:
+    container_name: grafana
+    image: grafana/grafana-oss:latest
+    restart: unless-stopped
+    ports:
+      - "3004:3000"
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=wow
+      - GF_SECURITY_ADMIN_PASSWORD=hello
+    networks:
+      - metrics
+
 
 
 networks:
