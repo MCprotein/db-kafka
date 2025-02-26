@@ -137,4 +137,7 @@ container_memory_usage_bytes - container_memory_cache = container_memory_working
 ```
 
 ## grafana 연결
-작성예정
+broker의 특정 topic에 대한 메세지 개수 promQL
+```
+kafka_server_BrokerTopicMetrics_Count{name="MessagesInPerSec", topic=~"cdc-server-1.kafkacdc.product|mongodb.shop.product|mongodb.shop.category"}
+```
